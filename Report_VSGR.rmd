@@ -73,6 +73,21 @@ The method that performed best on the given data was the random forests method. 
 
 In conclusion, the most effective algorithm for the exercise based on the available data, would be the random forests algorithm (with or without cross-validation). As stated previously, the method does have a long runtime but it is clear that the accuracy of results obtained offsets the runtime considerations at least for this exercise. The worst OOB error estimated for the random forest methods used indicate a value of 0.44% which implies remarkable accuracy of the method and the model obtained. Assuming even a factor of 25 for the out of sample error leads to a maximum error of only 10%. Thus it is strongly recommended that the random forest method is applied for this problem. Further study in terms of narrowing down even more the number of features will perhaps result in faster runtime, while maintaining the same level of accuracy.
 
+And finally, when the random forests method with no pre-processing but with or without cross-validation was used on the test set, the results obtained tallied with what was expected, as stated by the submission results.
+
+#### Model Details
+Training Dataset:\
+Columns removed: Categorical/meta-data variables except classe\
+Correlation done? Yes\
+Correlation results: Outlier point (row 5373) detected and removed\
+Correlation results: total\_accel\_belt shown to be correlated to accel\_belt\_y which was confirmed. total\_accel\_belt was taken as being representative of accel\_belt\_y and accel\_belt\_z\
+Method Used: Random Forests\
+Cross-validation? Yes (k-fold, k = 10)\
+Pre-processing? No (PCA tested but either yielded poorer results or had unsustainable runtimes)\
+OOB Error: 0.41%\
+Expected out of sample error: < 10%
+
+
 #### References
 1. <https://www.stat.berkeley.edu/~breiman/RandomForests/cc_home.htm#ooberr>
 2. <http://stackoverflow.com/questions/9666212/how-to-compute-error-rate-from-a-decision-tree>
