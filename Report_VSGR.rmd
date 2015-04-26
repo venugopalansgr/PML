@@ -1,0 +1,78 @@
+---
+title: "PML Course Project Report"
+author: "Venugopalan"
+output: html_document
+self-contained: yes
+---
+
+### Introduction
+
+This write-up discusses the approach to the given data, rationale for the methodology used for the course assignment for the Practical Machine Learning module in Coursera. Where relevant, figures have also been presented to help augment the understanding behind the process adopted.
+
+### Approach
+
+The machine learning process generally begins with an attempt to fit a suitable model through the training set - one with definite outcomes (which have been marked as such) "supervised learning", and the other in which there is no particular tag to the data "unsupervised learning". The training dataset for this assignment consisted of 160 columns, with the last column labelling the outcome (the "classe" variable. Based on this, the type of machine learning would be the "supervised learning" kind.
+
+#### Feature Selection
+
+The training dataset consists of 160 columns and 19622 rows. The first step in the process of trying to figure out a machine learning algorithm is to understand the type of outcome that is expected. Examination of the "classe" column in the dataset (which is the designated outcome) shows the variable belonging to categories. Thus the problem at hand requires classification techniques as opposed to regression.
+
+With that settled, the next objective is to find out which variables would make for suitable predictors in order to accomplish the learning of the classification. Can 159 predictors be reduced to a smaller number that will first fit the training data well and would hopefully be a good fit on the test data?
+
+Examining the 159 columns shows that the first column - "X" - is simply the row number. Looking at the issue logically, using row numbers as predictors would definitely lead to undesirable characteristics in the final model leading to spurious results when applied to cross-validation and test sets. Hence column "X" is removed from the list of possible predictors.
+
+Column "user\_name" consists of the names of the different users whose data has been used. Using the same argument as before, the objective here is to fit a generalized model on the quality of the exercise, independent of who the user is. Fitting a model with "user\_name" as one of the predictors would be detrimental in this aspect and consequently, the "user_name" column is removed from the list of possible predictors.
+
+Other categorical variables that had could immediately be seen to not have or have an incorrect impact on the outcomes were also removed. These were the "cvtd_timestamp" and the "new_window" columns. As time stamps contribute little in terms of being suitable predictors, the "raw_timestamp_part_1" and "raw_timestamp_part_2" columns were also discarded.
+
+Further examination of the remaining columns indicated that many of the columns either had no values (represented by ""), had division by zero errors (represented by "#DIV/0!") or had NA values (represented by "NA"). These were primarily the columns that were computed using the data from the accelerometer, gyroscope and magnetometer and were the average, variance, standard deviation, amplitude, kurtosis and skewness columns in the training dataset. As a result of the insufficient information in these columns, using these as predictors would have led to failed classifications. Thus it was deemed prudent to remove from consideration all these columns from the dataset, and thereby from the list of possible predictors.
+
+#### Correlation Checking
+
+An important consideration once the obvious non-predictors were dealt with, was to check correlation between the other predictors. The reason for doing so is to mainly ensure that duplicated entries are not used in the learning algorithm as it would again skew or lead to incorrect results. As the remaining predictors were all numeric, the cor function in R could be called directly and was applied to this reduced dataset. As a first threshold, a value of 0.9 was used. This resulted in many correlations between many features - (total\_belt, roll\_belt, yaw\_belt, accel\_belt\_y, accel\_belt\_z), (pitch\_belt, accel\_belt\_x, magnet\_belt\_x), (gyros\_dumbbell\_x, gyros\_dumbbell\_z, gyros\_forearm\_z, gyros\_forearm\_y) - being the major groups. As a sanity check, some of the features were plotted against each other to ensure that the correlation did make sense. 
+
+When the above plotting was done, it led to some interesting results. The first of which was that features "gyros\_dumbbell\_x" and "gyros\_dumbbell\_z" (correlation of 0.98), showed no correlation when plotted. A single point (identified to be entry 5373) was shown to be totally unconnected to the rest of the points. Further examination of the range of both "gyros\_dumbbell\_x" and "gyros\_dumbbell\_z" confirmed that this point was an outlier. Consequently, this point was removed from the list of observations in order to reduce the skewness of the training dataset. When the correlation matrix was recomputed on this reduced dataset for these two features, the value had dropped to 0.6, which when re-plotted, seemed logical.
+
+<figure>
+  <img src= "C:\\Users\\Sushila\\Desktop\\Vinod\\Coursera\\Practical Machine Learning\\Correlation1.png" alt="" width="350" height="350">
+  <figcaption>Fig 1: Original correlation between gyro\_dumbbell\_x and gyro\_dumbbell\_z</figcaption>
+  </figure>
+  
+  <figure>
+  <img src="C:\\Users\\Sushila\\Desktop\\Vinod\\Coursera\\Practical Machine Learning\\Correlation2.png" alt="" width="350" height="350">
+  <figcaption>Fig 2: Correlation between gyro\_dumbbell\_x and gyro\_dumbbell\_z after removing outlier </figcaption>
+  </figure>\
+
+When the reduced dataset consisting of 19621 rows (instead of 19622) was used to compute the correlation matrix, the correlations between some of the other features also changes. The group previously consisting of (total\_belt, roll\_belt, yaw\_belt, accel\_belt\_y, accel\_belt\_z) no longer had the "yaw\_belt" feature at that level of correlation. Again, it was felt prudent to cross-check the correlation between the other variables in the group via plots. When total\_accel\_belt was plotted against "accel\_belt\_y" or "accel\_belt\_z", there seemed to be no correlation. In this case however, instead of dismissing the correlation totally out of hand, it was felt necessary to use concepts of vectors to determine if there was a correlation. A variable "total\_accel\_computed" was computed using "accel\_belt\_x", "accel\_belt\_y" and "accel\_belt\_z" as vector components and plotted against "total\_accel\_belt". The plot showed very good correlation between the two quantities, thereby making it clear that the correlation between "total\_accel\_belt" and "accel\_belt\_y" and/or "accel\_belt\_z" was indeed correct and meaningful. Owing to the complex formula linking the quantities, the correlation between total\_accel\_belt and accel\_belt\_y and accel\_belt\_z was not seen directly in the original correlation plot.
+
+  <figure>
+  <img src="C:\\Users\\Sushila\\Desktop\\Vinod\\Coursera\\Practical Machine Learning\\Correlation3.png" alt="" width="350" height="350">
+  <figcaption>Fig 3: Correlation between accel\_belt\_y and total\_accel\_belt</figcaption>
+  </figure>
+  
+  <figure>
+  <img src="C:\\Users\\Sushila\\Desktop\\Vinod\\Coursera\\Practical Machine Learning\\Correlation4.png" alt="" width="350" height="350">
+  <figcaption>Fig 4: Correlation between total\_accel\_computed (Calculated from x,y & z components) and total\_accel\_belt </figcaption>
+  </figure>\
+
+As they represented a similar set of quantities, in the interest of obtaining results quickly, it was decided that the "accel\_belt\_y" and "accel\_belt_\z" features would be dropped and would be represented instead via the "total\_accel\_belt" value. 
+
+For the rest of the features mentioned with correlation greater than 0.9, the plots revealed no surprises. Consequently, they were retained and would be dealt with via pre-processing.
+
+#### Method Selection
+
+As mentioned previously, classification methods need to be used for the the learning algorithm. Many different approaches were tried out - basic classification trees i) no pre-processing or cross-validation ii) pre-processing (PCA) no cross-validation iii) no pre-processing but with cross-validation iv) with pre-processing (PCA) and cross-validation, the boosted method AdaBoost and finally random forests (with and without pre-processing, and with and without cross-validation). In all the cross-validation cases, the k-fold cross-validation method was used, with k set to 10. Note that this value of k for the k-fold method may not be the optimal, and further refinement can be done if necessary (on the training set only) to see the performance of the algorithm with different k values.
+
+Of the methods tried, the boosted method had an extremely long run time and had to be interrupted in the middle. Consequently there is no result available from the boosted method "AdaBoost" for discussion. The basic tree classification algorithms had shorter run times and thus it was possible to obtain results for them. Unfortunately however, the results obtained by the "rpart" method had very high error rates (metrics computed from online resources) to the tune of 50-60%. The higher values were reported for the cases that had been pre-processed with the PCA method. Based on the available information, it can only be surmised that the input data for the "rpart" method needed to be filtered and cleaned out more before it can be reliably used. There is no doubt that that the out of sample errors for the "rpart" method is likely to be extremely high.
+
+#### Method Output
+
+The method that performed best on the given data was the random forests method. The method admittedly had a longer run time as can be expected (in an overly simplified sense it is the basic classification tree applied many times over), but it yielded excellent results. The out of bag (OOB) error estimate which provides an unbiased estimate of the classification error. This error was estimated to be less than 1% and this included the case where cross-validation was explicitly stated. The two approaches (with and without cross-validation) differed in their accuracy by only 0.03% (Without CV OOB = 0.41%, With CV OOB = 0.44%). According to available literature on random forests, the OOB error is as good an estimate of the system as the test set error. An additional run with PCA for pre-processing was also done. However, a proper model was not obtained owing to errors cropping up in the train function. 
+
+### Conclusion
+
+In conclusion, the most effective algorithm for the exercise based on the available data, would be the random forests algorithm (with or without cross-validation). As stated previously, the method does have a long runtime but it is clear that the accuracy of results obtained offsets the runtime considerations at least for this exercise. The worst OOB error estimated for the random forest methods used indicate a value of 0.44% which implies remarkable accuracy of the method and the model obtained. Assuming even a factor of 25 for the out of sample error leads to a maximum error of only 10%. Thus it is strongly recommended that the random forest method is applied for this problem. Further study in terms of narrowing down even more the number of features will perhaps result in faster runtime, while maintaining the same level of accuracy.
+
+#### References
+1. <https://www.stat.berkeley.edu/~breiman/RandomForests/cc_home.htm#ooberr>
+2. <http://stackoverflow.com/questions/9666212/how-to-compute-error-rate-from-a-decision-tree>
