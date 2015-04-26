@@ -34,24 +34,24 @@ An important consideration once the obvious non-predictors were dealt with, was 
 When the above plotting was done, it led to some interesting results. The first of which was that features "gyros\_dumbbell\_x" and "gyros\_dumbbell\_z" (correlation of 0.98), showed no correlation when plotted. A single point (identified to be entry 5373) was shown to be totally unconnected to the rest of the points. Further examination of the range of both "gyros\_dumbbell\_x" and "gyros\_dumbbell\_z" confirmed that this point was an outlier. Consequently, this point was removed from the list of observations in order to reduce the skewness of the training dataset. When the correlation matrix was recomputed on this reduced dataset for these two features, the value had dropped to 0.6, which when re-plotted, seemed logical.
 
 <figure>
-  <img src= "C:\\Users\\Sushila\\Desktop\\Vinod\\Coursera\\Practical Machine Learning\\Correlation1.png" alt="" width="350" height="350">
+  <img src= "https://cloud.githubusercontent.com/assets/10581641/7336489/50ab547c-ec33-11e4-89ab-3ceb56ed69c9.png" alt="" width="350" height="350">
   <figcaption>Fig 1: Original correlation between gyro\_dumbbell\_x and gyro\_dumbbell\_z</figcaption>
   </figure>
   
   <figure>
-  <img src="C:\\Users\\Sushila\\Desktop\\Vinod\\Coursera\\Practical Machine Learning\\Correlation2.png" alt="" width="350" height="350">
+  <img src="https://cloud.githubusercontent.com/assets/10581641/7336493/7a80a16c-ec33-11e4-9f08-128eec2e9443.png" alt="" width="350" height="350">
   <figcaption>Fig 2: Correlation between gyro\_dumbbell\_x and gyro\_dumbbell\_z after removing outlier </figcaption>
   </figure>\
 
 When the reduced dataset consisting of 19621 rows (instead of 19622) was used to compute the correlation matrix, the correlations between some of the other features also changes. The group previously consisting of (total\_belt, roll\_belt, yaw\_belt, accel\_belt\_y, accel\_belt\_z) no longer had the "yaw\_belt" feature at that level of correlation. Again, it was felt prudent to cross-check the correlation between the other variables in the group via plots. When total\_accel\_belt was plotted against "accel\_belt\_y" or "accel\_belt\_z", there seemed to be no correlation. In this case however, instead of dismissing the correlation totally out of hand, it was felt necessary to use concepts of vectors to determine if there was a correlation. A variable "total\_accel\_computed" was computed using "accel\_belt\_x", "accel\_belt\_y" and "accel\_belt\_z" as vector components and plotted against "total\_accel\_belt". The plot showed very good correlation between the two quantities, thereby making it clear that the correlation between "total\_accel\_belt" and "accel\_belt\_y" and/or "accel\_belt\_z" was indeed correct and meaningful. Owing to the complex formula linking the quantities, the correlation between total\_accel\_belt and accel\_belt\_y and accel\_belt\_z was not seen directly in the original correlation plot.
 
   <figure>
-  <img src="C:\\Users\\Sushila\\Desktop\\Vinod\\Coursera\\Practical Machine Learning\\Correlation3.png" alt="" width="350" height="350">
+  <img src="https://cloud.githubusercontent.com/assets/10581641/7336498/a10a0c4c-ec33-11e4-92b7-95120df60b14.png" alt="" width="350" height="350">
   <figcaption>Fig 3: Correlation between accel\_belt\_y and total\_accel\_belt</figcaption>
   </figure>
   
   <figure>
-  <img src="C:\\Users\\Sushila\\Desktop\\Vinod\\Coursera\\Practical Machine Learning\\Correlation4.png" alt="" width="350" height="350">
+  <img src="https://cloud.githubusercontent.com/assets/10581641/7336499/a867c5b0-ec33-11e4-8ea5-63c3b9a1639a.png" alt="" width="350" height="350">
   <figcaption>Fig 4: Correlation between total\_accel\_computed (Calculated from x,y & z components) and total\_accel\_belt </figcaption>
   </figure>\
 
