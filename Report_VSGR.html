@@ -127,6 +127,11 @@ Fig 4: Correlation between total_accel_computed (Calculated from x,y &amp; z com
 <div id="conclusion" class="section level3">
 <h3>Conclusion</h3>
 <p>In conclusion, the most effective algorithm for the exercise based on the available data, would be the random forests algorithm (with or without cross-validation). As stated previously, the method does have a long runtime but it is clear that the accuracy of results obtained offsets the runtime considerations at least for this exercise. The worst OOB error estimated for the random forest methods used indicate a value of 0.44% which implies remarkable accuracy of the method and the model obtained. Assuming even a factor of 25 for the out of sample error leads to a maximum error of only 10%. Thus it is strongly recommended that the random forest method is applied for this problem. Further study in terms of narrowing down even more the number of features will perhaps result in faster runtime, while maintaining the same level of accuracy.</p>
+<p>And finally, when the random forests method with no pre-processing but with or without cross-validation was used on the test set, the results obtained tallied with what was expected, as stated by the submission results.</p>
+<div id="model-details" class="section level4">
+<h4>Model Details</h4>
+<p>Training Dataset:<br />Columns removed: Categorical/meta-data variables except classe<br />Correlation done? Yes<br />Correlation results: Outlier point (row 5373) detected and removed<br />Correlation results: total_accel_belt shown to be correlated to accel_belt_y which was confirmed. total_accel_belt was taken as being representative of accel_belt_y and accel_belt_z<br />Method Used: Random Forests<br />Cross-validation? Yes (k-fold, k = 10)<br />Pre-processing? No (PCA tested but either yielded poorer results or had unsustainable runtimes)<br />OOB Error: 0.41%<br />Expected out of sample error: &lt; 10%</p>
+</div>
 <div id="references" class="section level4">
 <h4>References</h4>
 <ol style="list-style-type: decimal">
